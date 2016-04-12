@@ -1,8 +1,11 @@
 package com.basketstats.basketstats;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,9 +41,37 @@ public class RegisterActivity extends AppCompatActivity {
         startingLayout.addView(typeLabel("Bench Players", benchID));
         for(int i = 6; i <= 12; i++)
             startingLayout.addView(playerName(String.valueOf(i)));
+        startingLayout.addView(startGameButton());
         setContentView(startingLayout);
     }
 
+    /* submit button */
+    private Button startGameButton() {
+        Button button = new Button(this);
+        button.setHeight(WRAP_CONTENT);
+        button.setText("Start Game!");
+        button.setOnClickListener(startGameListener);
+        return button;
+    }
+
+    private View.OnClickListener startGameListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int count = 0;
+            Intent i = new Intent(RegisterActivity.this, statRecord.class);
+            Bundle extras = new Bundle();
+            for(EditText editText : playerList) {
+                String playerName = editText.getText().toString();
+                if (playerName.matches(""))
+                    continue;
+                extras.putString(String.valueOf(count), playerName);
+                count++;
+            }
+            extras.putString("numOfPlayers", String.valueOf(count));
+            i.putExtras(extras);
+            startActivity(i);
+        }
+    };
 
     /* Generate Text View (Starting , bench )*/
     private TextView typeLabel (String label, int id) {
