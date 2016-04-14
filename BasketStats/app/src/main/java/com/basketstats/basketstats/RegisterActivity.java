@@ -1,8 +1,8 @@
 package com.basketstats.basketstats;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -10,12 +10,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.view.ViewGroup.LayoutParams.FILL_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.widget.LinearLayout.VERTICAL;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -58,8 +58,12 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             int count = 0;
+            String date = "2016/04/25";
+            String opp = "GSW";
             Intent i = new Intent(RegisterActivity.this, statRecord.class);
             Bundle extras = new Bundle();
+            extras.putString("date", date);
+            extras.putString("opp", opp);
             for(EditText editText : playerList) {
                 String playerName = editText.getText().toString();
                 if (playerName.matches(""))
