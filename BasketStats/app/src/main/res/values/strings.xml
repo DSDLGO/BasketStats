@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BasketStats</string>
+
+    // button content
+    <string name="back">Back</string>
+
+    // warning section
+    <string name="warning">Warning</string>
+    <string name="player_not_enough">To start a game, at least 5 starting players must be specified!</string>
 </resources>
