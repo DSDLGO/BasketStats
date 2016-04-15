@@ -58,10 +58,12 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             int count = 0;
+            String team = "台大資工";
             String date = "2016/04/25";
             String opp = "GSW";
             Intent i = new Intent(RegisterActivity.this, statRecord.class);
             Bundle extras = new Bundle();
+            extras.putString("team", team);
             extras.putString("date", date);
             extras.putString("opp", opp);
             for(EditText editText : playerList) {
