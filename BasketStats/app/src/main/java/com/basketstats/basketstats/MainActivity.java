@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // run register activity on click
-                Intent runRegisterActivity = new Intent(MainActivity.this, RegisterActivity.class);
+                Intent runRegisterActivity = new Intent(MainActivity.this, NewMatch.class);
                 MainActivity.this.startActivity(runRegisterActivity);
             }
         });

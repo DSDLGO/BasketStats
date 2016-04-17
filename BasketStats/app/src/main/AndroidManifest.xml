@@ -16,7 +16,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".statRecord"></activity>
+        <activity android:name=".statRecord" />
+        <activity android:name=".NewMatch" />
+        <activity android:name=".NewTeam" />
+        <activity android:name=".SavedTeam"></activity>
     </application>
 
 </manifest>
