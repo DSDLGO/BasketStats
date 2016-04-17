@@ -8,4 +8,6 @@
     <color name="rectBack2">#F2A7B5</color>
     <color name="rectBack3">#CCCCCC</color>
     <color name="rectBack4">#E6E6E6</color>
+
+    <color name="drawerBack">#CCCCCC</color>
 </resources>

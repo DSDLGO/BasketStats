@@ -7,4 +7,13 @@
     // warning section
     <string name="warning">Warning</string>
     <string name="player_not_enough">To start a game, at least 5 starting players must be specified!</string>
+    <string name="player_name_wrong">Something wrong with player names</string>
+    <string name="error">Error!</string>
+    <string name="file_open_error">error on opening file</string>
+    <string name="file_write_error">error on writing file</string>
+
+    // menu
+    <string name="action_undo">Undo</string>
+    <string name="action_save">Save</string>
+    <string name="action_settings">Settings</string>
 </resources>
