@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,9 +15,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
@@ -31,7 +34,7 @@ public class statRecord extends AppCompatActivity {
     private String home_team, away_team, date;
     private int home_score = 0, away_score = 0;
     private Button homeTeamButton, awayTeamButton;
-    private Button playerButton1, playerButton2, playerButton3, playerButton4, playerButton5;
+    private Button[] playerButtons;
     private TextView homeTeamScore, awayTeamScore;
     private TextView playerStatusName, playerStatusString;
     private TextView playerSelected, actionSelected;
@@ -45,13 +48,16 @@ public class statRecord extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stat_record);
 
+        // create log instance
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
             Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
             String str = formatter.format(curDate);
             FileOutputStream fileout = openFileOutput(str + "record.log", MODE_PRIVATE);
             OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
-            Log = new RecordLog(outputWriter);
+            outputWriter.write(str + "\n");
+            FileInputStream filein = openFileInput(str + "record.log");
+            Log = new RecordLog(outputWriter, filein);
         }catch(Exception e){
             e.printStackTrace();
             showAlertAndFinish(R.string.error, R.string.file_open_error);
@@ -103,11 +109,12 @@ public class statRecord extends AppCompatActivity {
         playerSelected = (TextView) findViewById(R.id.player_selected);
         actionSelected = (TextView) findViewById(R.id.action_selected);
 
-        playerButton1 = (Button) findViewById(R.id.button_player_1);
-        playerButton2 = (Button) findViewById(R.id.button_player_2);
-        playerButton3 = (Button) findViewById(R.id.button_player_3);
-        playerButton4 = (Button) findViewById(R.id.button_player_4);
-        playerButton5 = (Button) findViewById(R.id.button_player_5);
+        playerButtons = new Button[5];
+        playerButtons[0] = (Button) findViewById(R.id.button_player_1);
+        playerButtons[1] = (Button) findViewById(R.id.button_player_2);
+        playerButtons[2] = (Button) findViewById(R.id.button_player_3);
+        playerButtons[3] = (Button) findViewById(R.id.button_player_4);
+        playerButtons[4] = (Button) findViewById(R.id.button_player_5);
     }
 
     private void processViews(){
@@ -131,16 +138,10 @@ public class statRecord extends AppCompatActivity {
 
         // numOfPlayers should be at least 5
         if(playerList.size() >= 5) {
-            playerButton1.setText(playerList.get(0));
-            playerButton1.setTag(playerList.get(0));
-            playerButton2.setText(playerList.get(1));
-            playerButton2.setTag(playerList.get(1));
-            playerButton3.setText(playerList.get(2));
-            playerButton3.setTag(playerList.get(2));
-            playerButton4.setText(playerList.get(3));
-            playerButton4.setTag(playerList.get(3));
-            playerButton5.setText(playerList.get(4));
-            playerButton5.setTag(playerList.get(4));
+            for(int i = 0; i < 5; i++){
+                playerButtons[i].setText(playerList.get(i));
+                playerButtons[i].setTag(playerList.get(i));
+            }
         }
         else{ // show a warning dialog
             showAlertAndFinish(R.string.warning, R.string.player_not_enough);
@@ -195,12 +196,9 @@ public class statRecord extends AppCompatActivity {
                 playerStatusString.setText(String.valueOf(pts) + "pts " + String.valueOf(reb) + "reb " + String.valueOf(ast) + "ast");
             }
         };
-        playerButton1.setOnClickListener(playerButtonListener);
-        playerButton2.setOnClickListener(playerButtonListener);
-        playerButton3.setOnClickListener(playerButtonListener);
-        playerButton4.setOnClickListener(playerButtonListener);
-        playerButton5.setOnClickListener(playerButtonListener);
 
+        for(int i = 0; i < 5; i++)
+            playerButtons[i].setOnClickListener(playerButtonListener);
     }
 
     @Override
@@ -218,6 +216,9 @@ public class statRecord extends AppCompatActivity {
                 return true;
             case R.id.action_save:
                 Toast.makeText(this, "Save", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_switch:
+                switchPlayer();
                 return true;
             case R.id.action_settings:
                 Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
@@ -272,5 +273,72 @@ public class statRecord extends AppCompatActivity {
         }
     }
 
+    private void switchPlayer(){
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View v = inflater.inflate(R.layout.dialog_switchplayer, null);
+        final Spinner on_field_player = (Spinner) v.findViewById(R.id.spinner_switch1);
+        final Spinner bench_player = (Spinner) v.findViewById(R.id.spinner_switch2);
 
+        ArrayList<String> on_field_player_list = new ArrayList<>();
+        for(int i = 0; i < 5; i++)
+            on_field_player_list.add(playerButtons[i].getText().toString());
+        ArrayAdapter<String> onFieldList = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, on_field_player_list);
+        on_field_player.setAdapter(onFieldList);
+        on_field_player.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,int position, long arg3) {
+                String selected = arg0.getItemAtPosition(position).toString();
+                on_field_player.setTag(selected);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                on_field_player.setTag("");
+            }
+        });
+
+        ArrayList<String> bench_player_list = new ArrayList<>(playerList);
+        for(int i = 0; i < 5; i++)
+            bench_player_list.remove(playerButtons[i].getText().toString());
+        ArrayAdapter<String> benchList = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, bench_player_list);
+        bench_player.setAdapter(benchList);
+        bench_player.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                String selected = arg0.getItemAtPosition(position).toString();
+                bench_player.setTag(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                bench_player.setTag("");
+            }
+        });
+
+        new AlertDialog.Builder(this)
+                .setTitle("Switch player")
+                .setView(v)
+                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Spinner spinner1 = (Spinner) (v.findViewById(R.id.spinner_switch1));
+                        Spinner spinner2 = (Spinner) (v.findViewById(R.id.spinner_switch2));
+
+                        String on_field = spinner1.getTag().toString();
+                        String bench = spinner2.getTag().toString();
+                        if(!on_field.matches("") && !bench.matches("")){
+                            int buttonIndex = 0;
+                            for(int i = 0; i < 5; i++){
+                                if(playerButtons[i].getText().toString() == on_field) buttonIndex = i;
+                            }
+                            playerButtons[buttonIndex].setText(bench);
+                            playerButtons[buttonIndex].setTag(bench);
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .show();
+    }
 }
