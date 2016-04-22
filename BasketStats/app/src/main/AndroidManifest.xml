@@ -16,7 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".statRecord"></activity>
+        <activity android:name=".statRecord" />
+        <activity android:name=".LoadActivity"></activity>
     </application>
 
 </manifest>
