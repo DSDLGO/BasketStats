@@ -34,7 +34,7 @@ import java.util.Hashtable;
 public class statRecord extends AppCompatActivity {
 
     private ArrayList<String> playerList = new ArrayList<String>();
-    private String home_team, away_team, date;
+    private String home_team, away_team;
     private int home_score = 0, away_score = 0;
     private Button homeTeamButton, awayTeamButton;
     private Button[] playerButtons;
@@ -73,11 +73,9 @@ public class statRecord extends AppCompatActivity {
         int numOfPlayers = Integer.parseInt(extras.getString("numOfPlayers"));
         home_team = extras.getString("team");
         away_team = extras.getString("opp");
-        date = extras.getString("date");
 
         log.log(log.info, "team=" + home_team);
         log.log(log.info, "opp=" + away_team);
-        log.log(log.info, "date=" + date);
         log.log(log.info, "numOfPlayers=" + String.valueOf(numOfPlayers));
 
         for (int i = 0; i < numOfPlayers; i++) {
@@ -430,7 +428,6 @@ public class statRecord extends AppCompatActivity {
                             jsonobj.put("away", away_team);
                             jsonobj.put("home_score", home_score);
                             jsonobj.put("away_score", away_score);
-                            jsonobj.put("date", date);
                             jsonobj.put("numOfPlayer", playerList.size());
                             System.out.println("jsonobj: " + jsonobj.toString());
                             JSONArray plist = new JSONArray();
