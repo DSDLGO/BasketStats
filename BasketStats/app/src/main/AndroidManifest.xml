@@ -17,7 +17,10 @@
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".statRecord" />
-        <activity android:name=".LoadActivity"></activity>
+        <activity android:name=".LoadActivity" />
+        <activity android:name=".NewMatch" />
+        <activity android:name=".NewTeam" />
+        <activity android:name=".SavedTeam"></activity>
     </application>
 
 </manifest>

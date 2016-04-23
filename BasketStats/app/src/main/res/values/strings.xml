@@ -13,6 +13,9 @@
     <string name="error">Error!</string>
     <string name="file_open_error">error on opening file</string>
     <string name="file_write_error">error on writing file</string>
+    <string name="no_team_name">You have to enter your team name</string>
+    <string name="no_team">You have to choose a team</string>
+    <string name="no_opponent">You have to enter your opponent</string>
 
     // menu
     <string name="action_undo">Undo</string>
