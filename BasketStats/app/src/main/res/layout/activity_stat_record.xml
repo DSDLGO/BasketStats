@@ -27,7 +27,7 @@
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/rectBack1"
+                android:background="#3a3737"
                 >
 
                 <Button
@@ -45,19 +45,22 @@
                     android:gravity="center"
                     android:layout_weight="8"
                     android:text="0"
-                    android:textSize="60sp"
+                    android:paddingTop="10dp"
+                    android:textSize="80sp"
                     android:id="@+id/score_home_team"
-                    />
+                    android:textColor="#ff0000" />
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
+                    android:paddingBottom="10dp"
                     android:layout_weight="3"
                     android:gravity="center"
                     android:text=":"
-                    android:textSize="60sp"
+                    android:textSize="80sp"
                     android:id="@+id/score_colon"
+                    android:textColor="#ff0000"
                     />
                 <TextView
                     android:layout_width="0dp"
@@ -65,9 +68,10 @@
                     android:gravity="center"
                     android:layout_weight="8"
                     android:text="0"
-                    android:textSize="60sp"
+                    android:paddingTop="10dp"
+                    android:textSize="80sp"
                     android:id="@+id/score_away_team"
-                    />
+                    android:textColor="#ff0000" />
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"

@@ -3,6 +3,7 @@ package com.basketstats.basketstats;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -42,6 +43,7 @@ public class statRecord extends AppCompatActivity {
     private String[] drawerList = {"Play by Play"};
     private Hashtable playerRecords;
     private RecordLog Log;
+    private Typeface typeface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,9 @@ public class statRecord extends AppCompatActivity {
         home_team = extras.getString("team");
         away_team = extras.getString("opp");
         date = extras.getString("date");
+
+        /* set up led font */
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/LED.ttf");
 
         Log.log(Log.info, "team=" + home_team);
         Log.log(Log.info, "opp=" + away_team);
@@ -102,6 +107,9 @@ public class statRecord extends AppCompatActivity {
 
         homeTeamScore = (TextView) findViewById(R.id.score_home_team);
         awayTeamScore = (TextView) findViewById(R.id.score_away_team);
+
+        homeTeamScore.setTypeface(typeface);
+        awayTeamScore.setTypeface(typeface);
 
         playerStatusName = (TextView) findViewById(R.id.name_player_status);
         playerStatusString = (TextView) findViewById(R.id.string_player_status);
