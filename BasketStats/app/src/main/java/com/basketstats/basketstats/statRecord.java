@@ -1,6 +1,7 @@
 package com.basketstats.basketstats;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -14,12 +15,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -32,18 +35,20 @@ import java.util.Hashtable;
 public class statRecord extends AppCompatActivity {
 
     private ArrayList<String> playerList = new ArrayList<String>();
-    private String home_team, away_team, date;
+    private String home_team, away_team;
     private int home_score = 0, away_score = 0;
     private Button homeTeamButton, awayTeamButton;
     private Button[] playerButtons;
     private TextView homeTeamScore, awayTeamScore;
     private TextView playerStatusName, playerStatusString;
     private TextView playerSelected, actionSelected;
-    private ListView leftDrawer;
+    private TextView leftDrawer;
     private String[] drawerList = {"Play by Play"};
     private Hashtable playerRecords;
-    private RecordLog Log;
     private Typeface typeface;
+    private Hashtable actionNameToMethod;
+    private RecordLog log;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +64,7 @@ public class statRecord extends AppCompatActivity {
             OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
             outputWriter.write(str + "\n");
             FileInputStream filein = openFileInput(str + "record.log");
-            Log = new RecordLog(outputWriter, filein);
+            log = new RecordLog(outputWriter, filein);
         }catch(Exception e){
             e.printStackTrace();
             showAlertAndFinish(R.string.error, R.string.file_open_error);
@@ -71,23 +76,22 @@ public class statRecord extends AppCompatActivity {
         int numOfPlayers = Integer.parseInt(extras.getString("numOfPlayers"));
         home_team = extras.getString("team");
         away_team = extras.getString("opp");
-        date = extras.getString("date");
 
         /* set up led font */
         typeface = Typeface.createFromAsset(getAssets(), "fonts/LED.ttf");
 
-        Log.log(Log.info, "team=" + home_team);
-        Log.log(Log.info, "opp=" + away_team);
-        Log.log(Log.info, "date=" + date);
-        Log.log(Log.info, "numOfPlayers=" + String.valueOf(numOfPlayers));
+        log.log(log.info, "team=" + home_team);
+        log.log(log.info, "opp=" + away_team);
+        log.log(log.info, "numOfPlayers=" + String.valueOf(numOfPlayers));
 
         for (int i = 0; i < numOfPlayers; i++) {
             String playerName = extras.getString(String.valueOf(i));
             playerList.add(playerName);
-            Log.log(Log.info, "player" + String.valueOf(i) + "=" + playerName);
+            log.log(log.info, "player" + String.valueOf(i) + "=" + playerName);
         }
 
         preprocessPlayerRecord();
+        preprocessAction();
 
         getViews();
         processViews();
@@ -96,9 +100,25 @@ public class statRecord extends AppCompatActivity {
 
     private void preprocessPlayerRecord(){
         playerRecords = new Hashtable();
+        actionNameToMethod = new Hashtable();
         for(int i = 0; i < playerList.size(); i++){
             playerRecords.put(playerList.get(i), new PlayerRecord());
         }
+    }
+
+    private void preprocessAction(){
+        actionNameToMethod.put("罰球中", "ftm");
+        actionNameToMethod.put("罰球不中", "fta");
+        actionNameToMethod.put("兩分中", "_2pm");
+        actionNameToMethod.put("兩分不中", "_2pa");
+        actionNameToMethod.put("三分中", "_3pm");
+        actionNameToMethod.put("三分不中", "_3pa");
+        actionNameToMethod.put("籃板", "reb");
+        actionNameToMethod.put("助攻", "ast");
+        actionNameToMethod.put("抄截", "stl");
+        actionNameToMethod.put("失誤", "to");
+        actionNameToMethod.put("犯規", "pf");
+        actionNameToMethod.put("火鍋", "bs");
     }
 
     private void getViews(){
@@ -155,22 +175,12 @@ public class statRecord extends AppCompatActivity {
             showAlertAndFinish(R.string.warning, R.string.player_not_enough);
         }
 
-        leftDrawer = (ListView) findViewById(R.id.left_drawer);
-        ListAdapter mAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
-                drawerList);
-        leftDrawer.setAdapter(mAdapter);
+        leftDrawer = (TextView) findViewById(R.id.left_drawer);
+
+        leftDrawer.setText("");
     }
 
     private void precessControllers(){
-
-        // add side menu item listener
-        leftDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "你選擇的是" + drawerList[position], Toast.LENGTH_SHORT).show();
-            }
-        });
 
         // add score button listener
         View.OnClickListener scoreButtonListener = new View.OnClickListener() {
@@ -179,12 +189,12 @@ public class statRecord extends AppCompatActivity {
                 if(v.getId() == homeTeamButton.getId()){
                     home_score += 1;
                     homeTeamScore.setText(String.valueOf(home_score));
-                    Log.log(Log.command, "viewId=" + String.valueOf(v.getId()));
+                    log.log(log.commandLog, "home_score=+1");
                 }
                 else if(v.getId() == awayTeamButton.getId()){
                     away_score += 1;
                     awayTeamScore.setText(String.valueOf(away_score));
-                    Log.log(Log.command, "viewId=" + String.valueOf(v.getId()));
+                    log.log(log.commandLog, "away_score=+1");
                 }
             }
         };
@@ -220,10 +230,10 @@ public class statRecord extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_undo:
-                Toast.makeText(this, "Undo", Toast.LENGTH_SHORT).show();
+                undo();
                 return true;
             case R.id.action_save:
-                Toast.makeText(this, "Save", Toast.LENGTH_SHORT).show();
+                save();
                 return true;
             case R.id.action_switch:
                 switchPlayer();
@@ -261,6 +271,7 @@ public class statRecord extends AppCompatActivity {
         if(view.getId() == R.id.button_player_selected) {
             if (playerSelected.getText().toString() != "" && actionSelected.getText().toString() != "") {
                 String playerName = playerSelected.getText().toString();
+                String actionName = actionSelected.getText().toString();
                 String action = actionSelected.getTag().toString();
                 PlayerRecord record = (PlayerRecord) playerRecords.get(playerName);
                 int plus = 1;
@@ -277,6 +288,9 @@ public class statRecord extends AppCompatActivity {
                 actionSelected.setTag("");
                 int pts = record.pts, reb = record.reb, ast = record.ast;
                 playerStatusString.setText(String.valueOf(pts) + "pts " + String.valueOf(reb) + "reb " + String.valueOf(ast) + "ast");
+
+                log.log(log.playLog, playerName, actionName);
+                leftDrawer.setText(log.getPlayByPlayList());
             }
         }
     }
@@ -340,7 +354,108 @@ public class statRecord extends AppCompatActivity {
                             }
                             playerButtons[buttonIndex].setText(bench);
                             playerButtons[buttonIndex].setTag(bench);
+                            playerStatusName.setText("");
+                            playerStatusString.setText("");
                         }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .show();
+    }
+
+    private void undo(){
+        ArrayList<String> retLog = log.undo();
+        if(retLog.isEmpty()) return;
+
+        int type = log.getType(retLog.get(0));
+        if(type == -1) return;
+        else if(type == log.info){
+            // do nothing
+        }
+        else if(type == log.commandLog){
+            if(retLog.size() == 2){
+                String str2 = retLog.get(1);
+                if(str2 == "home_score=+1"){
+                    home_score -= 1;
+                    homeTeamScore.setText(String.valueOf(home_score));
+                }
+                else if(str2 == "away_score=+1"){
+                    away_score -= 1;
+                    awayTeamScore.setText(String.valueOf(away_score));
+                }
+            }
+        }
+        else if(type == log.playLog){
+            if(retLog.size() == 3){
+                String playerName = retLog.get(1);
+                String action = retLog.get(2);
+                String actionMethod = actionNameToMethod.get(action).toString();
+                PlayerRecord record = (PlayerRecord) playerRecords.get(playerName);
+                int minus = -1;
+                try {
+                    Method method = record.getClass().getMethod(actionMethod, new Class[] { int.class });
+                    method.invoke(record, new Object[] { minus });
+                }catch (Exception e){
+                    e.printStackTrace();
+                    showAlertAndFinish(R.string.warning, R.string.player_name_wrong);
+                }
+
+                playerSelected.setText("");
+                actionSelected.setText("");
+                actionSelected.setTag("");
+                int pts = record.pts, reb = record.reb, ast = record.ast;
+                playerStatusString.setText(String.valueOf(pts) + "pts " + String.valueOf(reb) + "reb " + String.valueOf(ast) + "ast");
+
+                leftDrawer.setText(log.getPlayByPlayList());
+            }
+        }
+    }
+
+    private void save(){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+        final String str = formatter.format(curDate);
+        final String filename = "match/" + str + ".match";
+        new AlertDialog.Builder(this)
+                .setTitle("Save")
+                .setMessage("save file: " + "\n" + filename)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.out.println("saving file");
+                        try {
+                            String folder = "match";
+                            File match_dir = getDir(folder, Context.MODE_PRIVATE);
+                            File match_file = new File(match_dir, str + ".match");
+                            System.out.println("filepath: " + match_file.getAbsolutePath().toString());
+                            FileOutputStream fileout = new FileOutputStream(match_file);
+                            JSONObject jsonobj = new JSONObject();
+                            jsonobj.put("home", home_team);
+                            jsonobj.put("away", away_team);
+                            jsonobj.put("home_score", home_score);
+                            jsonobj.put("away_score", away_score);
+                            jsonobj.put("numOfPlayer", playerList.size());
+                            System.out.println("jsonobj: " + jsonobj.toString());
+                            JSONArray plist = new JSONArray();
+                            for (int i = 0; i < playerList.size(); i++) {
+                                plist.put(playerList.get(i));
+                                JSONObject obj = ((PlayerRecord) playerRecords.get(playerList.get(i))).toJson();
+                                jsonobj.put(playerList.get(i) + "stat", obj);
+                            }
+                            System.out.println("jsonobj: " + jsonobj.toString());
+                            jsonobj.put("playerList", plist);
+
+                            System.out.println("jsonobj: " + jsonobj.toString());
+                            fileout.write(jsonobj.toString().getBytes());
+                            fileout.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            showAlertAndFinish(R.string.error, R.string.file_open_error);
+                        }
+
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
