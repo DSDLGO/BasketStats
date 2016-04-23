@@ -45,10 +45,85 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:id="@+id/team_value"
-                android:layout_weight="0.3"
+                android:layout_weight="0.4"
                 android:gravity="center"/>
 
         </LinearLayout>
+
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Starting Players"
+            android:textSize="30sp"
+            android:id="@+id/starting"
+            android:gravity="center"/>
+
+
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:id="@+id/starting_list">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Bench Players"
+            android:textSize="30sp"
+            android:id="@+id/bench"
+            android:gravity="center" />
+
+
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:id="@+id/bench_list">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+
 
         <LinearLayout
             android:orientation="horizontal"
@@ -63,10 +138,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
+                android:text="Back"
+                android:id="@+id/back" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
                 android:text="OK"
                 android:id="@+id/ok" />
 
+
+
         </LinearLayout>
+
 
 
     </LinearLayout>

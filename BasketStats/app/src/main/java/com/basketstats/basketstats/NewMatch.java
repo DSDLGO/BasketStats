@@ -1,5 +1,6 @@
 package com.basketstats.basketstats;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,7 +25,10 @@ public class NewMatch extends AppCompatActivity {
     private Button NewTeamButton;
     private Button SavedTeamButton;
     private Button OKButton;
+    private Button BackButton;
     private TextView TeamChosenText;
+
+    private Bundle gameinfo = new Bundle();
 
 
 
@@ -38,10 +42,6 @@ public class NewMatch extends AppCompatActivity {
         getViews();
         processControllers();
 
-        //OKButton = (Button)findViewById(R.id.ok);
-        //OKButton.setOnClickListener(OKListener);
-
-
 
     }
 
@@ -50,10 +50,17 @@ public class NewMatch extends AppCompatActivity {
         NewTeamButton = (Button)findViewById(R.id.newteam);
         SavedTeamButton = (Button)findViewById(R.id.saved);
 
-
         OKButton = (Button)findViewById(R.id.ok);
+        BackButton = (Button)findViewById(R.id.back);
         TeamChosenText = (TextView)findViewById(R.id.team_chosen);
 
+    }
+
+    private void showAlertAndFinish(int titleId, int messageId){
+        new AlertDialog.Builder(NewMatch.this)
+                .setTitle(titleId)
+                .setMessage(messageId)
+                .show();
     }
 
     private void processControllers() {
@@ -68,36 +75,37 @@ public class NewMatch extends AppCompatActivity {
             String opp = oppEditText.getText().toString();
 
             //team
-            //String team = "台大資工";
             String team = TeamChosenText.getText().toString();
 
-            EditText yearEditText = (EditText)findViewById(R.id.year);
-            int year = Integer.parseInt(yearEditText.getText().toString());
-
-            EditText monthEditText = (EditText)findViewById(R.id.month);
-            int month = Integer.parseInt(monthEditText.getText().toString());
-
-            EditText dayEditText = (EditText)findViewById(R.id.day);
-            int day = Integer.parseInt(dayEditText.getText().toString());
-
-            String date = "2016/04/25";
 
             Intent i = new Intent(NewMatch.this, statRecord.class);
-            Bundle extras = new Bundle();
-            extras.putString("team", team);
-            extras.putString("date", date);
-            extras.putString("opp", opp);
-            extras.putString("0", "a");
-            extras.putString("2", "b");
-            extras.putString("3", "c");
-            extras.putString("4", "d");
-            extras.putString("1", "e");
-            extras.putString("numOfPlayers", "5");
-            i.putExtras(extras);
-            startActivity(i);
+
+            gameinfo.putString("team", team);
+            gameinfo.putString("opp", opp);
+
+            if(opp.matches(""))
+                showAlertAndFinish(R.string.warning,R.string.no_opponent);
+            else if (team.matches(""))
+                showAlertAndFinish(R.string.warning,R.string.no_team);
+            else {
+                i.putExtras(gameinfo);
+                startActivity(i);
+            }
+
+
             }
         };
         OKButton.setOnClickListener(OKListener);
+
+        //add Back Button listener
+        View.OnClickListener BackListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        };
+        BackButton.setOnClickListener(BackListener);
 
         //add NewTeam Button listener(startActivityForResult)
         View.OnClickListener NewTeamListener = new View.OnClickListener() {
@@ -139,6 +147,14 @@ public class NewMatch extends AppCompatActivity {
                 Bundle extras = data.getExtras();
                 String team = extras.getString("team");
                 TeamChosenText.setText(team);
+
+
+                int numOfPlayers = Integer.parseInt(extras.getString("numOfPlayers"));
+                for (int i = 0; i < numOfPlayers; i++) {
+                    String playerName = extras.getString(String.valueOf(i));
+                    gameinfo.putString(String.valueOf(i), playerName);
+                }
+                gameinfo.putString("numOfPlayers", String.valueOf(numOfPlayers));
             }
             else if(requestCode==1){
                 TeamChosenText.setText("Saved");
