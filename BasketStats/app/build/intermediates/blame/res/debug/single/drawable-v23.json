@@ -1,5 +1,9 @@
 [
     {
+        "merged": "C:\\Users\\Jim Wu\\Desktop\\CSIE\\Sophomore\\DSDL\\LAB1\\BasketStats\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v23\\abc_control_background_material.xml",
+        "source": "C:\\Users\\Jim Wu\\Desktop\\CSIE\\Sophomore\\DSDL\\LAB1\\BasketStats\\BasketStats\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\drawable-v23\\abc_control_background_material.xml"
+    },
+    {
         "merged": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v23\\abc_control_background_material.xml",
         "source": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\drawable-v23\\abc_control_background_material.xml"
     }

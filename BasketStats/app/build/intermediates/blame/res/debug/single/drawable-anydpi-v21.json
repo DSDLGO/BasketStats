@@ -1,10 +1,18 @@
 [
     {
+        "merged": "C:\\Users\\Jim Wu\\Desktop\\CSIE\\Sophomore\\DSDL\\LAB1\\BasketStats\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\ic_control_point_24dp.xml",
+        "source": "C:\\Users\\Jim Wu\\Desktop\\CSIE\\Sophomore\\DSDL\\LAB1\\BasketStats\\BasketStats\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\ic_control_point_24dp.xml"
+    },
+    {
         "merged": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\ic_control_point_24dp.xml",
         "source": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\ic_control_point_24dp.xml"
     },
     {
         "merged": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\ic_add_circle_outline_24dp.xml",
         "source": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\ic_add_circle_outline_24dp.xml"
+    },
+    {
+        "merged": "C:\\Users\\Jim Wu\\Desktop\\CSIE\\Sophomore\\DSDL\\LAB1\\BasketStats\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\drawable-anydpi-v21\\ic_add_circle_outline_24dp.xml",
+        "source": "C:\\Users\\Jim Wu\\Desktop\\CSIE\\Sophomore\\DSDL\\LAB1\\BasketStats\\BasketStats\\app\\build\\generated\\res\\pngs\\debug\\drawable-anydpi-v21\\ic_add_circle_outline_24dp.xml"
     }
 ]

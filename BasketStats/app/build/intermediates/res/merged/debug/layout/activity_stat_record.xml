@@ -446,7 +446,6 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:choiceMode="singleChoice"
         >
 
         <TextView
@@ -457,11 +456,21 @@
             android:textSize="30sp"
             android:id="@+id/play_by_play"
             />
-        <ListView android:id="@+id/left_drawer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <ScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scroll_play_by_play"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_below="@id/play_by_play"
-            android:background="@color/drawerBack"
-            />
+            android:background="@color/rectBack1"
+            >
+            <TextView android:id="@+id/left_drawer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                />
+        </ScrollView>
     </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>
