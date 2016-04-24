@@ -1,9 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout
-    android:background="@drawable/statsexpert"
+    android:background="@drawable/joris"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="173dp"
+        android:id="@+id/frameLayout">
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/frameLayout"
+        android:id="@+id/linearLayout">
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Beyond Definition"
+        android:id="@+id/textView2"
+        android:textSize="40sp"
+        android:theme="@style/AppTheme"
+        android:visibility="visible"
+        android:textIsSelectable="false"
+        android:textColor="#d9e316"
+        android:background="#FF000000"
+        android:phoneNumber="false"
+        android:typeface="serif"
+        android:textStyle="bold|italic"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:maxHeight="50dp"
+        android:height="75dp"
+        android:gravity="center_vertical" />
 
 </RelativeLayout>
