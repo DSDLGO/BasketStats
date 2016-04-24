@@ -14,6 +14,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -100,13 +104,13 @@ public class LoadActivity extends AppCompatActivity {
     }
 
     private void showFile(){
+        String s = "";
         try{
             File dir = getDir("match", Context.MODE_PRIVATE);
             File file = new File(dir, filename);
             FileInputStream fi = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fi);
             char[] inputBuffer= new char[5000];
-            String s="";
             int charRead;
 
             while ((charRead = isr.read(inputBuffer)) > 0) {
@@ -118,11 +122,35 @@ public class LoadActivity extends AppCompatActivity {
             }
             isr.close();
 
-            System.out.println("string: " + s);
-            load_show.setText(s);
         }catch (IOException e){
             e.printStackTrace();
             showAlertAndFinish(R.string.error, R.string.file_open_error);
+        }
+
+        Log.d("VAR", s);
+        try {
+            JSONObject json = new JSONObject(s);
+            String home_name = (String) json.get("home");
+            String away_name = (String) json.get("away");
+            int numOfPlayer = (int) json.get("numOfPlayer");
+            JSONArray playerList = json.getJSONArray("playerList");
+            ArrayList<String> playerNames = new ArrayList<>();
+            for(int i = 0; i < numOfPlayer; i++){
+                playerNames.add((String)playerList.get(i));
+            }
+
+            String text = "";
+            text += "home: " + home_name + "\n";
+            text += "away: " + away_name + "\n";
+            text += "numOfPlayer: " + String.valueOf(numOfPlayer) + "\n";
+            for(int i = 0; i < numOfPlayer; i++){
+                text += playerNames.get(i) + "\n";
+            }
+
+            load_show.setText(text);
+        }catch (JSONException e){
+            e.printStackTrace();
+            Log.e("error", "Json error");
         }
     }
 }
