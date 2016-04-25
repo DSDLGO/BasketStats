@@ -23,6 +23,10 @@
         </activity>
         <activity android:name="com.basketstats.basketstats.RegisterActivity" />
         <activity android:name="com.basketstats.basketstats.statRecord" />
+        <activity android:name="com.basketstats.basketstats.LoadActivity" />
+        <activity android:name="com.basketstats.basketstats.NewMatch" />
+        <activity android:name="com.basketstats.basketstats.NewTeam" />
+        <activity android:name="com.basketstats.basketstats.SavedTeam" />
     </application>
 
 </manifest>

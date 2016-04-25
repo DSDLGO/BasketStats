@@ -1,18 +1,18 @@
 [
     {
-        "merged": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi-v4\\ic_action_circled_add.png",
-        "source": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\src\\main\\res\\mipmap-xhdpi\\ic_action_circled_add.png"
+        "merged": "/Users/Simon/AndroidStudioProjects/test/BasketStats/BasketStats/app/build/intermediates/res/merged/debug/mipmap-xhdpi-v4/ic_circle_add.png",
+        "source": "/Users/Simon/AndroidStudioProjects/test/BasketStats/BasketStats/app/src/main/res/mipmap-xhdpi/ic_circle_add.png"
     },
     {
-        "merged": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi-v4\\ic_launcher.png",
-        "source": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher.png"
+        "merged": "/Users/Simon/AndroidStudioProjects/test/BasketStats/BasketStats/app/build/intermediates/res/merged/debug/mipmap-xhdpi-v4/ic_action_circled_add.png",
+        "source": "/Users/Simon/AndroidStudioProjects/test/BasketStats/BasketStats/app/src/main/res/mipmap-xhdpi/ic_action_circled_add.png"
     },
     {
-        "merged": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi-v4\\ic_add_circle.png",
-        "source": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\src\\main\\res\\mipmap-xhdpi\\ic_add_circle.png"
+        "merged": "/Users/Simon/AndroidStudioProjects/test/BasketStats/BasketStats/app/build/intermediates/res/merged/debug/mipmap-xhdpi-v4/ic_launcher.png",
+        "source": "/Users/Simon/AndroidStudioProjects/test/BasketStats/BasketStats/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xhdpi-v4\\ic_circle_add.png",
-        "source": "C:\\Users\\Joris\\Desktop\\DSDL\\BasketStats\\app\\src\\main\\res\\mipmap-xhdpi\\ic_circle_add.png"
+        "merged": "/Users/Simon/AndroidStudioProjects/test/BasketStats/BasketStats/app/build/intermediates/res/merged/debug/mipmap-xhdpi-v4/ic_add_circle.png",
+        "source": "/Users/Simon/AndroidStudioProjects/test/BasketStats/BasketStats/app/src/main/res/mipmap-xhdpi/ic_add_circle.png"
     }
 ]

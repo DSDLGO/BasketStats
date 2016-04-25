@@ -1,5 +1,5 @@
 # Built application files
-build/
+/*/build/
 
 # Crashlytics configuations
 com_crashlytics_export_strings.xml
@@ -14,7 +14,6 @@ local.properties
 .signing/
 
 # User-specific configurations
-.idea/
 .idea/libraries/
 .idea/workspace.xml
 .idea/tasks.xml
