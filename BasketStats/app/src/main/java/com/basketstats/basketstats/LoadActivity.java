@@ -38,6 +38,7 @@ public class LoadActivity extends AppCompatActivity {
     private TextView load_show_to;
     private TextView load_show_pf;
     private TextView load_show_blk;
+    private TextView load_show_pts;
     private Button chooseFile;
     private String filename;
     @Override
@@ -108,6 +109,7 @@ public class LoadActivity extends AppCompatActivity {
         load_show_to = (TextView) findViewById(R.id.load_show_to);
         load_show_pf = (TextView) findViewById(R.id.load_show_pf);
         load_show_blk = (TextView) findViewById(R.id.load_show_blk);
+        load_show_pts = (TextView) findViewById(R.id.load_show_pts);
 
     }
 
@@ -207,6 +209,12 @@ public class LoadActivity extends AppCompatActivity {
                 JSONObject jsonObject = json.getJSONObject(playerList.get(j) + "stat");
                 textbs +=  jsonObject.getString("bs") + "\n";
             }
+            String textpts="pts\n";
+            for(int j = 0 ; j < numOfPlayer; j++){
+                JSONObject jsonObject = json.getJSONObject(playerList.get(j) + "stat");
+                int pts = Integer.parseInt(jsonObject.getString("ftm")) + Integer.parseInt(jsonObject.getString("_2pm")) * 2 + Integer.parseInt(jsonObject.getString("_3pm")) * 3;
+                textpts += String.valueOf(pts) + "\n";
+            }
 
             String text = "";
             String textplayers ="Players\n";
@@ -227,6 +235,7 @@ public class LoadActivity extends AppCompatActivity {
             load_show_to.setText(textto);
             load_show_pf.setText(textpf);
             load_show_blk.setText(textbs);
+            load_show_pts.setText(textpts);
         }catch (JSONException e){
             e.printStackTrace();
             Log.e("error", "Json error");
