@@ -49,7 +49,6 @@ public class statRecord extends AppCompatActivity {
     private Hashtable actionNameToMethod;
     private RecordLog log;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +69,7 @@ public class statRecord extends AppCompatActivity {
             showAlertAndFinish(R.string.error, R.string.file_open_error);
         }
 
-        /* get players name from register activity */
+        /* get players' name from register activity */
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         int numOfPlayers = Integer.parseInt(extras.getString("numOfPlayers"));
@@ -80,6 +79,7 @@ public class statRecord extends AppCompatActivity {
         /* set up led font */
         typeface = Typeface.createFromAsset(getAssets(), "fonts/LED.ttf");
 
+        /* log some info */
         log.log(log.info, "team=" + home_team);
         log.log(log.info, "opp=" + away_team);
         log.log(log.info, "numOfPlayers=" + String.valueOf(numOfPlayers));
@@ -101,12 +101,16 @@ public class statRecord extends AppCompatActivity {
     private void preprocessPlayerRecord(){
         playerRecords = new Hashtable();
         actionNameToMethod = new Hashtable();
+
+        /* put records into hashtable */
         for(int i = 0; i < playerList.size(); i++){
             playerRecords.put(playerList.get(i), new PlayerRecord());
         }
     }
 
     private void preprocessAction(){
+
+        /* put text-method relation */
         actionNameToMethod.put("罰球中", "ftm");
         actionNameToMethod.put("罰球不中", "fta");
         actionNameToMethod.put("兩分中", "_2pm");
@@ -171,7 +175,8 @@ public class statRecord extends AppCompatActivity {
                 playerButtons[i].setTag(playerList.get(i));
             }
         }
-        else{ // show a warning dialog
+        else{
+            // show a warning dialog
             showAlertAndFinish(R.string.warning, R.string.player_not_enough);
         }
 
@@ -209,9 +214,7 @@ public class statRecord extends AppCompatActivity {
                 playerStatusName.setText(tag);
                 playerSelected.setText(tag);
 
-                PlayerRecord record = (PlayerRecord) playerRecords.get(tag);
-                int pts = record.pts, reb = record.reb, ast = record.ast;
-                playerStatusString.setText(String.valueOf(pts) + "pts " + String.valueOf(reb) + "reb " + String.valueOf(ast) + "ast");
+                setPlayerStatusString(tag);
             }
         };
 
@@ -260,6 +263,7 @@ public class statRecord extends AppCompatActivity {
     }
 
     public void ActionClicked(View view){
+        // check: the view should be a button
         if(view instanceof Button) {
             Button button = (Button) view;
             actionSelected.setText(button.getText().toString());
@@ -269,6 +273,7 @@ public class statRecord extends AppCompatActivity {
 
     public void ActionSubmit(View view){
         if(view.getId() == R.id.button_player_selected) {
+            // if both player and action are selected
             if (playerSelected.getText().toString() != "" && actionSelected.getText().toString() != "") {
                 String playerName = playerSelected.getText().toString();
                 String actionName = actionSelected.getText().toString();
@@ -283,16 +288,24 @@ public class statRecord extends AppCompatActivity {
                     showAlertAndFinish(R.string.warning, R.string.player_name_wrong);
                 }
 
+                // empty all fields
                 playerSelected.setText("");
                 actionSelected.setText("");
                 actionSelected.setTag("");
-                int pts = record.pts, reb = record.reb, ast = record.ast;
-                playerStatusString.setText(String.valueOf(pts) + "pts " + String.valueOf(reb) + "reb " + String.valueOf(ast) + "ast");
 
+                setPlayerStatusString(playerName);
+
+                // update log and play-by-play list
                 log.log(log.playLog, playerName, actionName);
                 leftDrawer.setText(log.getPlayByPlayList());
             }
         }
+    }
+
+    private void setPlayerStatusString(String tag){
+        PlayerRecord record = (PlayerRecord) playerRecords.get(tag);
+        int pts = record.pts, reb = record.reb, ast = record.ast;
+        playerStatusString.setText(String.valueOf(pts) + "pts " + String.valueOf(reb) + "reb " + String.valueOf(ast) + "ast");
     }
 
     private void switchPlayer(){
