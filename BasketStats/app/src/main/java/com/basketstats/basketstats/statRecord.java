@@ -1,5 +1,6 @@
 package com.basketstats.basketstats;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -109,7 +110,6 @@ public class statRecord extends AppCompatActivity {
     }
 
     private void preprocessAction(){
-
         /* put text-method relation */
         actionNameToMethod.put("罰球中", "ftm");
         actionNameToMethod.put("罰球不中", "fta");
@@ -186,7 +186,6 @@ public class statRecord extends AppCompatActivity {
     }
 
     private void precessControllers(){
-
         // add score button listener
         View.OnClickListener scoreButtonListener = new View.OnClickListener() {
             @Override
@@ -224,6 +223,7 @@ public class statRecord extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // inflate option menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_statrecord, menu);
         return super.onCreateOptionsMenu(menu);
@@ -249,6 +249,13 @@ public class statRecord extends AppCompatActivity {
         }
     }
 
+    /* ---------------------------------------------------------------------
+     * Function: showAlertAndFinish
+     * ---------------------------------------------------------------------
+     * When an error occurred, show an alert dialog then finish
+     * this activity.
+     * ---------------------------------------------------------------------
+     */
     private void showAlertAndFinish(int titleId, int messageId){
         new AlertDialog.Builder(statRecord.this)
                 .setTitle(titleId)
@@ -262,6 +269,12 @@ public class statRecord extends AppCompatActivity {
                 .show();
     }
 
+    /* ---------------------------------------------------------------------
+     * Function: ActionClicked
+     * ---------------------------------------------------------------------
+     * Invoked when one of the action button is clicked
+     * ---------------------------------------------------------------------
+     */
     public void ActionClicked(View view){
         // check: the view should be a button
         if(view instanceof Button) {
@@ -271,43 +284,66 @@ public class statRecord extends AppCompatActivity {
         }
     }
 
+    /* ---------------------------------------------------------------------
+     * Function: ActionSubmit
+     * ---------------------------------------------------------------------
+     * Invoked when the submit button is clicked
+     * ---------------------------------------------------------------------
+     */
     public void ActionSubmit(View view){
         if(view.getId() == R.id.button_player_selected) {
             // if both player and action are selected
             if (playerSelected.getText().toString() != "" && actionSelected.getText().toString() != "") {
                 String playerName = playerSelected.getText().toString();
-                String actionName = actionSelected.getText().toString();
-                String action = actionSelected.getTag().toString();
-                PlayerRecord record = (PlayerRecord) playerRecords.get(playerName);
+                String action = actionSelected.getText().toString();
+                String actionMethod = actionSelected.getTag().toString();
                 int plus = 1;
-                try {
-                    Method method = record.getClass().getMethod(action, new Class[] { int.class });
-                    method.invoke(record, new Object[] { plus });
-                }catch (Exception e){
-                    e.printStackTrace();
-                    showAlertAndFinish(R.string.warning, R.string.player_name_wrong);
-                }
-
-                // empty all fields
-                playerSelected.setText("");
-                actionSelected.setText("");
-                actionSelected.setTag("");
-
-                setPlayerStatusString(playerName);
-
-                // update log and play-by-play list
-                log.log(log.playLog, playerName, actionName);
-                leftDrawer.setText(log.getPlayByPlayList());
+                invokeRecordMethod(playerName, action, actionMethod, plus);
             }
         }
     }
 
+    private void invokeRecordMethod(String  playerName, String action, String actionMethod, int diff){
+        PlayerRecord record = (PlayerRecord) playerRecords.get(playerName);
+        try {
+            Method method = record.getClass().getMethod(actionMethod, new Class[] { int.class });
+            method.invoke(record, new Object[] { diff });
+        }catch (Exception e){
+            e.printStackTrace();
+            showAlertAndFinish(R.string.warning, R.string.player_name_wrong);
+        }
+
+        // empty all fields
+        playerSelected.setText("");
+        actionSelected.setText("");
+        actionSelected.setTag("");
+
+        setPlayerStatusString(playerName);
+
+        // update log and play-by-play list
+        log.log(log.playLog, playerName, action);
+        leftDrawer.setText(log.getPlayByPlayList());
+    }
+
+    /* ---------------------------------------------------------------------
+     * Function: setPlayerStatusString
+     * ---------------------------------------------------------------------
+     * Show the current stats for a player
+     * ---------------------------------------------------------------------
+     */
     private void setPlayerStatusString(String tag){
         PlayerRecord record = (PlayerRecord) playerRecords.get(tag);
         int pts = record.pts, reb = record.reb, ast = record.ast;
         playerStatusString.setText(String.valueOf(pts) + "pts " + String.valueOf(reb) + "reb " + String.valueOf(ast) + "ast");
     }
 
+    /* ---------------------------------------------------------------------
+     * Function: switchPlayer
+     * ---------------------------------------------------------------------
+     * Invoked when the switch_player button is clicked. Activate a dialog
+     * to ask user for the players to be switched.
+     * ---------------------------------------------------------------------
+     */
     private void switchPlayer(){
         LayoutInflater inflater = LayoutInflater.from(this);
         final View v = inflater.inflate(R.layout.dialog_switchplayer, null);
@@ -379,6 +415,13 @@ public class statRecord extends AppCompatActivity {
                 .show();
     }
 
+    /* ---------------------------------------------------------------------
+     * Function: undo
+     * ---------------------------------------------------------------------
+     * Undo the previous command performed. Update every information
+     * that are changed.
+     * ---------------------------------------------------------------------
+     */
     private void undo(){
         ArrayList<String> retLog = log.undo();
         if(retLog.isEmpty()) return;
@@ -406,27 +449,19 @@ public class statRecord extends AppCompatActivity {
                 String playerName = retLog.get(1);
                 String action = retLog.get(2);
                 String actionMethod = actionNameToMethod.get(action).toString();
-                PlayerRecord record = (PlayerRecord) playerRecords.get(playerName);
                 int minus = -1;
-                try {
-                    Method method = record.getClass().getMethod(actionMethod, new Class[] { int.class });
-                    method.invoke(record, new Object[] { minus });
-                }catch (Exception e){
-                    e.printStackTrace();
-                    showAlertAndFinish(R.string.warning, R.string.player_name_wrong);
-                }
-
-                playerSelected.setText("");
-                actionSelected.setText("");
-                actionSelected.setTag("");
-                int pts = record.pts, reb = record.reb, ast = record.ast;
-                playerStatusString.setText(String.valueOf(pts) + "pts " + String.valueOf(reb) + "reb " + String.valueOf(ast) + "ast");
-
-                leftDrawer.setText(log.getPlayByPlayList());
+                invokeRecordMethod(playerName, action, actionMethod, minus);
             }
         }
     }
 
+    /* ---------------------------------------------------------------------
+     * Function: save
+     * ---------------------------------------------------------------------
+     * Save the current stats into a file using JSON format. The file
+     * is saved under match/ folder.
+     * ---------------------------------------------------------------------
+     */
     private void save(){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
         Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
