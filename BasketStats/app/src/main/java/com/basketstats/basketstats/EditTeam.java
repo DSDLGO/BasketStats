@@ -2,16 +2,15 @@ package com.basketstats.basketstats;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -21,57 +20,97 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NewTeam extends AppCompatActivity {
-
+public class EditTeam extends AppCompatActivity {
 
     private Button OKButton;
     private Button BackButton;
-    private LinearLayout StartingLayout;
-    private LinearLayout BenchLayout;
+    private EditText teamEditText;
+    private LinearLayout PlayerListLayout;
+
+    private String removeFile;
 
     private List<EditText> playerListEditText = new ArrayList<EditText>();      // store the name of input players
     private List<String> playerList = new ArrayList<String>();
 
+    private List<String> newPlayerList = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_team);
+        setContentView(R.layout.activity_edit_team);
 
         getViews();
-        createPlayList();
+        getTeam();
         processControllers();
+
     }
 
     private void getViews() {
 
         OKButton = (Button)findViewById(R.id.ok);
         BackButton = (Button)findViewById(R.id.back);
-        StartingLayout = (LinearLayout)findViewById(R.id.starting_list);
-        BenchLayout = (LinearLayout)findViewById(R.id.bench_list);
+        PlayerListLayout = (LinearLayout)findViewById(R.id.player_list);
+        teamEditText = (EditText)findViewById(R.id.team_value);
 
     }
 
-    private void createPlayList() {
+    private void getTeam() {
 
-        for(int i=1;i<=5;i++)
-            StartingLayout.addView(createEditText(i));
-        for(int i=1;i<=7;i++)
-            BenchLayout.addView(createEditText(i));
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+
+        String team = extras.getString("team");
+        int numOfPlayers = Integer.parseInt(extras.getString("numOfPlayers"));
+        for (int i = 0; i < numOfPlayers; i++) {
+            String playerName = extras.getString(String.valueOf(i));
+            playerList.add(playerName);
+        }
+
+        //set team edit text for name
+        teamEditText.setText(team);
+
+        //create playerlist
+        createPlayList(numOfPlayers);
+
+        removeFile = extras.getString("removeFile");
 
     }
 
-    private EditText createEditText(int num) {
+
+    private void createPlayList(int numOfPlayers) {
+
+        for(int i=0;i<numOfPlayers;i++)
+            PlayerListLayout.addView(createEditText(i,playerList.get(i)));
+
+    }
+
+    private EditText createEditText(int num,String playerName) {
         EditText playerEditText = new EditText(this);
         playerEditText.setId(Integer.valueOf(num));
-        playerEditText.setHint("Player " + num);
+        playerEditText.setText(playerName);
         playerListEditText.add(playerEditText);
         return playerEditText;
     }
 
-    private void showAlertAndFinish(int titleId, int messageId){
-        new AlertDialog.Builder(NewTeam.this)
+
+
+    private void showAlert(int titleId, int messageId){
+        new AlertDialog.Builder(EditTeam.this)
                 .setTitle(titleId)
                 .setMessage(messageId)
+                .show();
+    }
+
+    private void showAlertAndFinish(int titleId, int messageId){
+        new AlertDialog.Builder(EditTeam.this)
+                .setTitle(titleId)
+                .setMessage(messageId)
+                .setPositiveButton(R.string.back, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
                 .show();
     }
 
@@ -82,11 +121,10 @@ public class NewTeam extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(NewTeam.this, NewMatch.class);
+                Intent i = new Intent(EditTeam.this, SavedTeam.class);
                 Bundle extras = new Bundle();
 
                 // get new team name from EditText
-                EditText teamEditText = (EditText)findViewById(R.id.team_value);
                 String team = teamEditText.getText().toString();
                 extras.putString("team", team);
 
@@ -98,28 +136,33 @@ public class NewTeam extends AppCompatActivity {
                     if (playerName.matches(""))
                         continue;
                     extras.putString(String.valueOf(count), playerName);
-                    playerList.add(playerName);
+                    newPlayerList.add(playerName);
                     count++;
                 }
                 extras.putString("numOfPlayers", String.valueOf(count));
 
                 // showAlert
                 if (team.matches(""))
-                    showAlertAndFinish(R.string.warning,R.string.no_team_name);
+                    showAlert(R.string.warning, R.string.no_team_name);
                 else if(count<5)
-                    showAlertAndFinish(R.string.warning,R.string.player_not_enough);
+                    showAlert(R.string.warning, R.string.player_not_enough);
                 else {
 
                     // save the team
                     saveTeamtoFile(team);
 
+                    deleteFile();
+
                     // Back to new match
-                    i.putExtras(extras);
-                    setResult(RESULT_OK,i);
+                    //i.putExtras(extras);
+                    setResult(RESULT_OK, i);
                     finish();
+
                 }
 
             }
+
+
         };
         OKButton.setOnClickListener(OKListener);
 
@@ -132,6 +175,15 @@ public class NewTeam extends AppCompatActivity {
             }
         };
         BackButton.setOnClickListener(BackListener);
+    }
+
+    private void deleteFile() {
+
+        //delete file
+        File dir = getDir("team", Context.MODE_PRIVATE);
+        File file_delete = new File(dir, removeFile);
+        file_delete.delete();
+
     }
 
     private void saveTeamtoFile(String team) {
@@ -149,10 +201,10 @@ public class NewTeam extends AppCompatActivity {
             FileOutputStream fileout = new FileOutputStream(team_file);
             JSONObject jsonobj = new JSONObject();
             jsonobj.put("TeamName", team);
-            jsonobj.put("numOfPlayer", playerList.size());
+            jsonobj.put("numOfPlayer", newPlayerList.size());
             System.out.println("jsonobj: " + jsonobj.toString());
-            for (int j = 0; j < playerList.size(); j++) {
-                jsonobj.put(String.valueOf(j), playerList.get(j));
+            for (int j = 0; j < newPlayerList.size(); j++) {
+                jsonobj.put(String.valueOf(j), newPlayerList.get(j));
             }
             System.out.println("jsonobj: " + jsonobj.toString());
             fileout.write(jsonobj.toString().getBytes());
@@ -166,6 +218,4 @@ public class NewTeam extends AppCompatActivity {
     }
 
 
-
-    
 }

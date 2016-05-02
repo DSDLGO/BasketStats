@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.basketstats.basketstats.SavedTeam">
+    tools:context="com.basketstats.basketstats.EditTeam">
 
     <LinearLayout
         android:orientation="vertical"
@@ -17,27 +17,65 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:textSize="45sp"
+            android:text="Your team"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:text="Saved Team"
-            android:textSize="45sp"
-            android:id="@+id/savedTeam"
-            android:gravity="center" />
+            android:weightSum="1">
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:id="@+id/teamlist">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Team Name"
+                android:textSize="30sp"
+                android:id="@+id/team_name"
+                android:layout_weight="0.5"
+                android:gravity="center"/>
 
-        </ListView>
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/team_value"
+                android:layout_weight="0.4"
+                android:gravity="center"/>
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="PlayerList"
+            android:textSize="30sp"
+            android:gravity="center"/>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:id="@+id/text_show"/>
+            android:weightSum="1">
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:id="@+id/player_list">
 
+            </LinearLayout>
+
+        </LinearLayout>
 
 
         <LinearLayout

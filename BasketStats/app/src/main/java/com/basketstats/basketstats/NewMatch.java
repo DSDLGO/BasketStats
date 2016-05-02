@@ -41,7 +41,7 @@ public class NewMatch extends AppCompatActivity {
 
     }
 
-    private void showAlertAndFinish(int titleId, int messageId){
+    private void showAlert(int titleId, int messageId){
         new AlertDialog.Builder(NewMatch.this)
                 .setTitle(titleId)
                 .setMessage(messageId)
@@ -69,9 +69,9 @@ public class NewMatch extends AppCompatActivity {
                 gameinfo.putString("opp", opp);
 
                 if(opp.matches(""))
-                    showAlertAndFinish(R.string.warning,R.string.no_opponent);
+                    showAlert(R.string.warning,R.string.no_opponent);
                 else if (team.matches(""))
-                    showAlertAndFinish(R.string.warning,R.string.no_team);
+                    showAlert(R.string.warning,R.string.no_team);
                 else {
                     i.putExtras(gameinfo);
                     startActivity(i);
@@ -126,22 +126,20 @@ public class NewMatch extends AppCompatActivity {
 
             // 0 : Newteam result
             // 1 : Saveteam result
-            if(requestCode==0){
-                Bundle extras = data.getExtras();
-                String team = extras.getString("team");
-                TeamChosenText.setText(team);
+
+            Bundle extras = data.getExtras();
+            String team = extras.getString("team");
+            TeamChosenText.setText(team);
 
 
-                int numOfPlayers = Integer.parseInt(extras.getString("numOfPlayers"));
-                for (int i = 0; i < numOfPlayers; i++) {
-                    String playerName = extras.getString(String.valueOf(i));
-                    gameinfo.putString(String.valueOf(i), playerName);
-                }
-                gameinfo.putString("numOfPlayers", String.valueOf(numOfPlayers));
+            int numOfPlayers = Integer.parseInt(extras.getString("numOfPlayers"));
+            for (int i = 0; i < numOfPlayers; i++) {
+                String playerName = extras.getString(String.valueOf(i));
+                gameinfo.putString(String.valueOf(i), playerName);
             }
-            else if(requestCode==1){
-                TeamChosenText.setText("Saved");
-            }
+            gameinfo.putString("numOfPlayers", String.valueOf(numOfPlayers));
+
+
 
         }
     }
