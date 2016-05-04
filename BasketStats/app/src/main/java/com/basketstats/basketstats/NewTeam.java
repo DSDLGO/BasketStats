@@ -26,6 +26,7 @@ public class NewTeam extends AppCompatActivity {
 
     private Button OKButton;
     private Button BackButton;
+    private Button AddButton;
     private LinearLayout StartingLayout;
     private LinearLayout BenchLayout;
 
@@ -46,6 +47,7 @@ public class NewTeam extends AppCompatActivity {
 
         OKButton = (Button)findViewById(R.id.ok);
         BackButton = (Button)findViewById(R.id.back);
+        AddButton = (Button)findViewById(R.id.add);
         StartingLayout = (LinearLayout)findViewById(R.id.starting_list);
         BenchLayout = (LinearLayout)findViewById(R.id.bench_list);
 
@@ -53,17 +55,23 @@ public class NewTeam extends AppCompatActivity {
 
     private void createPlayList() {
 
-        for(int i=1;i<=5;i++)
+        for(int i=0;i<=4;i++)
             StartingLayout.addView(createEditText(i));
-        for(int i=1;i<=7;i++)
+        for(int i=5;i<=11;i++)
             BenchLayout.addView(createEditText(i));
+
+    }
+
+    private void addPlayList() {
+
+        BenchLayout.addView(createEditText(playerListEditText.size()));
 
     }
 
     private EditText createEditText(int num) {
         EditText playerEditText = new EditText(this);
         playerEditText.setId(Integer.valueOf(num));
-        playerEditText.setHint("Player " + num);
+        playerEditText.setHint("Player " + (num+1));
         playerListEditText.add(playerEditText);
         return playerEditText;
     }
@@ -132,6 +140,16 @@ public class NewTeam extends AppCompatActivity {
             }
         };
         BackButton.setOnClickListener(BackListener);
+
+        //add Add Button listener
+        View.OnClickListener AddListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                addPlayList();
+            }
+        };
+        AddButton.setOnClickListener(AddListener);
     }
 
     private void saveTeamtoFile(String team) {

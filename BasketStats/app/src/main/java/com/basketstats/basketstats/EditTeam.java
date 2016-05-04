@@ -24,6 +24,7 @@ public class EditTeam extends AppCompatActivity {
 
     private Button OKButton;
     private Button BackButton;
+    private Button AddButton;
     private EditText teamEditText;
     private LinearLayout PlayerListLayout;
 
@@ -49,6 +50,7 @@ public class EditTeam extends AppCompatActivity {
 
         OKButton = (Button)findViewById(R.id.ok);
         BackButton = (Button)findViewById(R.id.back);
+        AddButton = (Button)findViewById(R.id.add);
         PlayerListLayout = (LinearLayout)findViewById(R.id.player_list);
         teamEditText = (EditText)findViewById(R.id.team_value);
 
@@ -81,6 +83,12 @@ public class EditTeam extends AppCompatActivity {
 
         for(int i=0;i<numOfPlayers;i++)
             PlayerListLayout.addView(createEditText(i,playerList.get(i)));
+
+    }
+
+    private void addPlayList() {
+
+        PlayerListLayout.addView(createEditText(playerListEditText.size(),""));
 
     }
 
@@ -175,6 +183,17 @@ public class EditTeam extends AppCompatActivity {
             }
         };
         BackButton.setOnClickListener(BackListener);
+
+        //add Add Button listener
+        View.OnClickListener AddListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                addPlayList();
+            }
+        };
+        AddButton.setOnClickListener(AddListener);
+
     }
 
     private void deleteFile() {
